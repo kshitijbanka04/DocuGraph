@@ -59,10 +59,8 @@ def add_chunks_to_faiss(chunks_file: str, index_file: str, metadata_file: str):
         index = faiss.IndexFlatL2(dimension)
         print("New FAISS index created.")
 
-    # Add embeddings to the index
     index.add(embeddings)
 
-    # Append metadata
     try:
         with open(metadata_file, "r", encoding="utf-8") as f:
             existing_metadata = json.load(f)
@@ -75,8 +73,8 @@ def add_chunks_to_faiss(chunks_file: str, index_file: str, metadata_file: str):
     print(f"Stored {len(chunks)} chunks in FAISS.")
 
 if __name__ == "__main__":
-    chunks_file = "processed_chunks.json"  # Path to your JSON chunks file
-    index_file = "faiss_index.bin"         # Path to save FAISS index
-    metadata_file = "faiss_metadata.json" # Path to save metadata
+    chunks_file = "processed_chunks.json"  
+    index_file = "faiss_index.bin"         
+    metadata_file = "faiss_metadata.json" 
 
     add_chunks_to_faiss(chunks_file, index_file, metadata_file)
