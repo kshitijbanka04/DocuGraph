@@ -4,6 +4,8 @@ from typing import List, Dict
 import os
 from dotenv import load_dotenv
 
+from query_processing import expand_query, load_synonyms
+
 # Load environment variables
 load_dotenv()
 
@@ -37,6 +39,8 @@ def query_llm(context: str, question: str) -> str:
     """
     Use an LLM to generate an answer based on the context and question.
     """
+    synonyms_dict = load_synonyms("synonyms.json")
+    question = expand_query(question, synonyms_dict)
     messages = [
         {"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": f"Context:\n{context}\n\nQuestion:\n{question}\n\nAnswer with reference to the semantic structure of the document."}
@@ -125,6 +129,24 @@ if __name__ == "__main__":
     "links": None
 }
     ]
+
+    synonyms_dict = {
+    "green transition": ["sustainability", "renewable energy shift", "eco-friendly transformation", "clean energy transition", "decarbonization"],
+    "economic growth": ["development", "GDP growth", "prosperity", "financial expansion", "wealth generation"],
+    "climate change": ["global warming", "environmental impact", "carbon emissions", "climate crisis", "ecological changes"],
+    "infrastructure development": ["construction growth", "urban planning", "public works", "capital projects", "developmental projects"],
+    "employment generation": ["job creation", "workforce expansion", "labor market growth", "employment opportunities", "skill-based hiring"],
+    "skill development": ["capacity building", "workforce training", "vocational education", "professional development", "talent cultivation"],
+    "inequality": ["income disparity", "wealth gap", "social inequity", "economic imbalance", "poverty disparity"],
+    "energy transition": ["shift to renewables", "alternative energy adoption", "clean energy integration", "power sector reform", "low-carbon economy"],
+    "global supply chain": ["international trade routes", "trade logistics", "import-export networks", "supply chain dynamics", "cross-border commerce"],
+    "MSMEs": ["small businesses", "startup ecosystem", "entrepreneurial ventures", "SME sector", "local enterprises"],
+    "agriculture sector": ["farming industry", "agribusiness", "crop production", "agricultural economy", "farm sector"],
+    "health improvement": ["public health", "healthcare advancements", "disease prevention", "nutrition enhancement", "wellness promotion"],
+    "inequality": ["income disparity", "wealth gap", "social inequity", "economic imbalance", "poverty disparity"],
+    "digital transformation": ["technology adoption", "IT revolution", "digitalization", "online transition", "cyber innovation"],
+    "geopolitical challenges": ["global conflicts", "international disputes", "foreign policy challenges", "geoeconomic risks", "regional instability"]
+}
     
     # User query
     user_query = "tell me more about the path of green transition in India"

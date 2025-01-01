@@ -45,7 +45,7 @@ def main():
     metadata_file = "faiss_metadata.json"
     index, metadata = load_faiss_index(index_file, metadata_file)
 
-    st.title("Intelligent Document Search and Answer Generator")
+    st.title("🤖 Intelligent Document Search and Answer Generator")
     st.write("Input a query to retrieve relevant documents and generate an answer.")
 
     # Conversation history
@@ -58,7 +58,6 @@ def main():
         # Step 1: Retrieve relevant documents
         st.write("Fetching relevant documents...")
         retrieved_chunks = query_faiss(index, metadata, user_query, k=5)
-        print(retrieved_chunks)
 
         # Step 2: Format retrieved chunks into context
         context = format_context(retrieved_chunks)
@@ -75,22 +74,34 @@ def main():
         st.session_state.conversation_history.append({"role": "assistant", "content": llm_response})
 
         # Step 4: Display results
-        st.write("### Relevant Documents:")
+        st.subheader("🔍 Relevant Documents")
         for chunk in retrieved_chunks:
-            st.markdown(f"**Distance:** {chunk['distance']}")
-            st.markdown(f"**Content:** {chunk['metadata'].get('content', 'No content available')}")
-            if chunk["links"]:
-                st.markdown(f"**Links:** {', '.join(chunk['links'])}")
-            st.markdown("---")
+            with st.expander(f"Distance: {chunk['distance']:.4f}"):
+                st.markdown(f"**Content:** {chunk['metadata'].get('content', 'No content available')}")
+                if chunk["links"]:
+                    st.markdown(f"**Links:** {', '.join(chunk['links'])}")
 
-        st.write("### Generated Answer:")
-        st.write(llm_response)
+        st.subheader("🎉 Final Answer")
+        st.markdown(f"""
+            <div style="
+                background-color: #f9f9f9; 
+                padding: 15px; 
+                border-radius: 10px; 
+                border: 1px solid #ddd; 
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+                font-size: 16px; 
+                color: #333;">
+                <strong>{llm_response}</strong>
+            </div>
+        """, unsafe_allow_html=True)
 
-        # Display conversation history
-        st.write("### Conversation History:")
+
+        st.subheader("🔍 Conversation History")
         for message in st.session_state.conversation_history:
             role = "You" if message["role"] == "user" else "Assistant"
-            st.markdown(f"**{role}:** {message['content']}")
+            with st.container():
+                st.markdown(f"<div style='margin:5px 0;'><strong>{role}:</strong> {message['content']}</div>", 
+                            unsafe_allow_html=True)
 
 if __name__ == "__main__":
     main()
